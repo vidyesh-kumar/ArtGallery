@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="{% static '/CSS/styles.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>   
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;1,200;1,300&family=Roboto:ital,wght@0,100;0,300;1,100&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                /*Template Colours Here*/
+              },
+              fontFamily:{
+                /*Fonts Here*/
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body>
+    <!--Navbar Tailwind-->
+    <h1>Navbar Here</h1>
+    {%block content%}
+    
+    {%endblock%}
+    <h1>Footer Here</h1>
+    <!--Footer Tailwind-->
+</body>
+</html>
