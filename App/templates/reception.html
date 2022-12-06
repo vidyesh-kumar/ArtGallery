@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+{%load static%}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'CSS/styles.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>   
+    <title>Reception</title>
+</head>
+<body>
+    <div class="flex justify-center">
+        <img src="{% static 'IMGS/reception.jpg' %}" class="w-screen h-screen" alt="PageBackground">
+        <div class="absolute bottom-5 w-[80%] bg-white rounded-xl h-[30%]">
+            <div class="flex flex-col justify-center items-center p-10">
+                <h1 class="text-3xl font-bold font-mono">Welcome {{user.username}},</h1>
+                <div class = "flex flex-row items-center justify-center p-10 w-full space-around gap-20">
+                    {% if group == 'Artist'%}
+                            <button class="bg-yellow-300 rounded-2xl text-xl font-mono w-[200px] h-[50px] hover:bg-yellow-400" id="AddArtModal">Add Art</button>
+                            <button class="bg-yellow-300 rounded-2xl text-xl font-mono w-[200px] h-[50px] hover:bg-yellow-400"><a href="{% url 'gallery' %}">Visit Gallery</a></button>
+                            <button class="bg-yellow-300 rounded-2xl text-xl font-mono w-[200px] h-[50px] hover:bg-yellow-400"><a href="{% url 'profile' %}">View Profile</a></button>
+                    {%else%}
+                        <button class="bg-yellow-300 rounded-2xl text-xl font-mono w-[200px] h-[50px] hover:bg-yellow-400"><a href="">Visit Gallery</a></button>
+                        <button class="bg-yellow-300 rounded-2xl text-xl font-mono w-[200px] h-[50px] hover:bg-yellow-400"><a href="{% url 'profile' %}">View Profile</a></button>
+                    {%endif%}
+                </div>
+            </div>
+        </div>
+        <div class="hidden absolute w-screen bg-transparent backdrop-blur-sm h-screen top-0 z-50" id="ArtModal">
+            <div class="flex w-full h-full">
+                <div class=" w-1/2 h-2/3 bg-white m-auto rounded-xl border border-black">
+                    <form enctype="multipart/form-data" method="POST" class="text-xl flex flex-col gap-3 items-center justify-center p-10">
+                        {% csrf_token %}
+                        <div class="flex flex-row gap-2">
+                            <label for="title">Title</label>
+                            <input type="text" name="title" id="title" class="border border-black rounded-xl">
+                        </div>
+                        <div class="flex flex-row gap-2">
+                            <label for="description">Description</label>
+                            <textarea name="description" id="description" cols="30" rows="5" class="border border-black rounded-xl resize-none"></textarea>
+                        </div>
+                        <div class="flex flex-row gap-2">
+                            <label for="image_url">Image</label>
+                            <input type="file" name="image_url" id="image_url" class="border border-black rounded-xl">
+                        </div>
+                        <div class="flex flex-row gap-2">
+                            <label for="type">Category</label>
+                            <select name="type" id="type" class="border border-black rounded-xl">
+                                <option value="Painting">Painting</option>
+                                <option value="Photography">Photography</option>
+                                <option value="Digital Art">Digital Art</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-row gap-2">
+                            <label for="price">Price</label>
+                            <input type="number" name="price" id="price" class="border border-black rounded-xl">
+                        </div>
+                        <div class="flex flex-row gap-2">
+                            <label for="quantity">Quantity</label>
+                            <input type="number" name="quantity" id="quantity" class="border border-black rounded-xl">
+                        </div>
+                        <button type="submit" class="mx-auto bg-blue-500 hover:bg-blue-800 rounded-2xl flex items-center justify-center w-1/3 h-12 text-white font-mono font-semibold text-xl">Add Art</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $("#AddArtModal").click(function(){
+            $("#ArtModal").toggleClass('hidden');
+        });
+    </script>
+</body>
+</html>

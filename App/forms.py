@@ -1,16 +1,10 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-
-
-# Create your forms here.
-from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from .models import Artist,Customer,Art
+from PIL import Image
 
 class NewUserForm(UserCreationForm):
-    email = forms.EmailField(required=True)
-
     class Meta:
         model = User
         fields = ("username", "email", "password1", "password2")
@@ -21,3 +15,18 @@ class NewUserForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+class ArtistUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Artist
+        fields = ['name','country','email','about','phone',"profile_pic"]
+
+class CustomerUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Customer
+        fields = ['name','country','email','about','phone']
+
+class ArtUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Art
+        fields = ['title','price','description','type','image_url']

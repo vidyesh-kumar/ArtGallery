@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+{%load static%}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'CSS/styles.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>   
+    <title>Profile</title>
+</head>
+<body>
+    <div>
+        <img src="{% static 'IMGS/paper.jpg' %}" class="w-screen h-screen" alt="ProfilePageBackground">
+    </div>
+    <div class="absolute top-0 w-screen">
+        <h1 class="font-mono font-bold text-5xl text-center my-10 w-full mx-auto">Profile Page</h1>
+        <div class="flex flex-col mx-10 font-mono text-2xl">
+            {% if group == 'Artist' %}
+            <div class="flex  w-1/2 m-4">
+                <label for="id_name" class="w-1/2">Username:</label> 
+                <p >{{user.username}}</p>
+            </div>
+            <div class="flex  w-1/2 m-4">
+                <label for="id_name" class="w-1/2">Name:</label> 
+                <p >{{user.artist.name}}</p>
+            </div>
+            <div class="flex  w-1/2 m-4">
+                <label for="id_about" class="w-1/2">About:</label>
+                <p >{{user.artist.about}}</p>
+            </div>
+            <div class="flex  w-1/2 m-4">
+                <label for="id_location" class="w-1/2">Country:</label>
+                <p >{{user.artist.country}}</p>
+            </div>
+            <div class="flex  w-1/2 m-4 ">
+                <label for="id_city" class="w-1/2" >Email:</label>
+                <p >{{user.artist.email}}</p>
+            </div>
+            <div class="flex  w-1/2 m-4">
+                <label for="id_state" class="w-1/2">Rating:</label>
+                <p >{{user.artist.rating}}</p>
+            </div>
+            <div class="flex  w-1/2 m-4">
+                <label for="id_phone" class="w-1/2">Phone No:</label>
+                <p >{{user.artist.phone}}</p>
+            </div>
+            {% else %}
+            <div class="flex  w-1/2 m-4">
+                <label for="id_name" class="w-1/2">Username:</label> 
+                <p >{{user.username}}</p>
+            </div>
+            <div class="flex  w-1/2 m-4">
+                <label for="id_name" class="w-1/2">Name:</label> 
+                <p >{{user.customer.name}}</p>
+            </div>
+            <div class="flex  w-1/2 m-4">
+                <label for="id_about" class="w-1/2">About:</label>
+                <p >{{user.customer.about}}</p>
+            </div>
+            <div class="flex  w-1/2 m-4">
+                <label for="id_location" class="w-1/2">Country:</label>
+                <p >{{user.customer.country}}</p>
+            </div>
+            <div class="flex  w-1/2 m-4 ">
+                <label for="id_city" class="w-1/2" >Email:</label>
+                <p >{{user.customer.email}}</p>
+            </div>
+            <div class="flex  w-1/2 m-4">
+                <label for="id_phone" class="w-1/2">Phone No:</label>
+                <p >{{user.customer.phone}}</p>
+            </div>
+            {% endif %}
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl my-4 w-1/2" id="EditProfileModal">Edit Profile</button>
+        </div>
+    </div>
+    <div class="absolute right-40 top-20 w-64 h-64 rounded-full">
+        <img src="{%get_media_prefix%}{% if group == 'Artist' %}{{user.artist.profile_pic}}{% else %}{{user.customer.profile_pic}}{% endif %}" class="w-full h-full rounded-full hover:scale-105 transition" alt="ProfilePic">
+    </div>
+    <div class="hidden absolute w-screen bg-transparent backdrop-blur-sm h-screen top-0 z-50" id="ProfileModal">
+        <div class="flex w-full h-full">
+            <div class=" w-1/2 h-2/3 bg-white m-auto rounded-xl border border-black">
+                <form enctype="multipart/form-data" method="POST" class="text-xl flex flex-col gap-3 items-center justify-center p-10">
+                    {% csrf_token %}
+                    <div class="flex flex-row gap-3 w-full">
+                        <label for="uname" class="w-1/2">Username:</label>
+                        <input type="text" id="uname" name="uname" class="w-full" value="{{user.username}}"><br>
+                    </div>
+                    <div class="flex flex-row gap-3 w-full">
+                        <label for="name" class="w-1/2">Name:</label>
+                        <input type="text" id="name" name="name" class="w-full" value="{% if group == 'Artist' %}{{user.artist.name}}{% else %}{{user.customer.name}}{% endif %}"><br>
+                    </div>
+                    <div class="flex flex-row gap-3 w-full">
+                        <label for="about" class="w-1/2">About:</label>
+                        <textarea name="about" id="about" cols="30" rows="5" value="{% if group == 'Artist' %}{{user.artist.about}}{% else %}{{user.customer.about}}{% endif %}" class="w-full"></textarea>
+                    </div>
+                    <div class="flex flex-row gap-3 w-full">
+                        <label for="country" class="w-1/2">Country:</label>
+                        <input type="text" id="country" name="country" class="w-full" value="{% if group == 'Artist' %}{{user.artist.country}}{% else %}{{user.customer.country}}{% endif %}"><br>
+                    </div>
+                    <div class="flex flex-row gap-3 w-full">
+                        <label for="email" class="w-1/2">Email:</label>
+                        <input type="text" id="email" name="email" class="w-full" value="{% if group == 'Artist' %}{{user.artist.email}}{% else %}{{user.customer.email}}{% endif %}"><br>
+                    </div>
+                    <div class="flex flex-row gap-3 w-full">
+                        <label for="phone" class="w-1/2">Phone No:</label>
+                        <input type="text" id="phone" name="phone" class="w-full" value="{% if group == 'Artist' %}{{user.artist.phone}}{% else %}{{user.customer.phone}}{% endif %}"><br>
+                    </div>
+                    <div class="flex flex-row gap-3 w-full">
+                        <label for="profile_pic" class="w-1/2">Profile Pic:</label>
+                        <input type="file" id="profile_pic" name="profile_pic" class="w-full"><br>
+                    </div>
+                    <button type="submit" class="mx-auto bg-blue-500 hover:bg-blue-800 rounded-2xl flex items-center justify-center w-1/3 h-12 text-white font-mono font-semibold text-xl">Save Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="absolute bottom-14 right-20 flex flex-col align-center justify-center h-[300px] w-[500px] bg-gray-300 border-2 border-black rounded-2xl py-6 gap-8 -rotate-12 hover:-rotate-3 delay-75 transition-all ease-linear">
+        <h3 class="font-bold text-xl text-center">Art Gallery Card</h3>
+        <div class="flex flex-row w-full h-12 text-xl font-bold text-white">
+            <a href="{% url 'logout' %}" class="mx-auto bg-blue-500 hover:bg-blue-800 rounded-2xl flex items-center justify-center w-1/3">Logout</a>
+        </div>
+        <div class="flex flex-row w-full h-12 text-xl font-bold text-black text-center">
+            <div class="mx-auto w-1/2 flex items-center justify-center">Vidyesh Kumar<br>4NM20CS209</div>
+            <div class="mx-auto w-1/2 flex items-center justify-center">Swasthik Ashok Shetty<br>4NM20CS196</div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function(){
+            $("#EditProfileModal").click(function(){
+                $("#ProfileModal").toggleClass('hidden');
+            });
+        });
+    
+    </script>
+</body>
+</html>
