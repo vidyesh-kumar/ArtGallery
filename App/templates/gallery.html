@@ -14,28 +14,103 @@
     <div>
         <img src="{% static 'IMGS/GalleryPage.png' %}" class="object-fit-fill w-screen h-screen" alt="HomePageBackground">
     </div>  
-    <div class="fixed top-[105px] left-72 w-[506px] h-[368px] bg-white">
+    <div class="absolute top-[105px] left-72 w-[506px] h-[368px] bg-white">
         <img src="{% get_media_prefix %}{{img_url}}" class="w-[506px] h-[368px] object-contain" alt="Logo">
     </div>
     <div class="absolute top-[40px] right-16 w-[506px] h-[500px] bg-white rounded-xl flex flex-col items-start justify-start gap-3 overflow-hidden border- border-black shadow shadow-2xl">
         <h1 class="flex font-mono font-semibold text-4xl w-full text-white items-center justify-center h-20 bg-orange-700">{{title}}</h1>
         <div class="flex flex-row w-full justify-start items-center px-10">
             <h3 class="text-2xl font-mono font-semibold w-1/2">Artist Name:</h3>
-            <h3 class="text-2xl font-mono font-semibold w-1/2">{{artist}}</h3>
+            <h3 class="text-2xl font-mono font-semibold w-1/2">{{artist.name}}</h3>
         </div>
         <div class="flex flex-row w-full justify-start items-center px-10">
             <h3 class="text-2xl font-mono font-semibold w-1/2">Art Type:</h3>
             <h3 class="text-2xl font-mono font-semibold w-1/2">{{type}}</h3>
         </div>
-        <div class="flex flex-row w-full justify-start items-center px-10">
+        <div class="flex flex-row w-full justify-start items-start px-10">
             <h3 class="text-2xl font-mono font-semibold w-1/2">Description:</h3>
             <h3 class="text-2xl font-mono w-1/2">{{description}}</h3>
         </div>
+        {% if payment == 'Onetime Payment'%}
+        <div class="flex flex-row w-full justify-start items-center px-10 flex-wrap">
+            <h3 class="text-2xl font-mono font-semibold w-1/2">Payment Type:</h3>
+            <h3 class="text-2xl font-mono font-semibold w-1/2">Rs.{{price}}</h3>
+            <h3 class="text-2xl font-mono font-semibold w-full text-center mt-3">({{payment}})</h3>
+        </div>
+        <div class="flex flex-row w-full justify-start items-center px-10">
+            <h3 class="text-2xl font-mono font-semibold w-1/2">Validity:</h3>
+            <h3 class="text-2xl font-mono w-1/2">{{lifetime}}</h3>
+        </div>
+        {% else %}
+        <div class="flex flex-row w-full justify-start items-center px-10 flex-wrap">
+            <h3 class="text-2xl font-mono font-semibold w-1/2">Payment Type:</h3>
+            <h3 class="text-2xl font-mono font-semibold w-1/2">Rs.{{price}}/Year</h3>
+            <h3 class="text-2xl font-mono font-semibold w-full text-center mt-3">({{payment}})</h3>
+        </div>
+        <div class="flex flex-row w-full justify-start items-center px-10">
+            <h3 class="text-2xl font-mono font-semibold w-1/2">Validity:</h3>
+            <h3 class="text-2xl font-mono w-1/2">{{lifetime}}</h3>
+        </div>
+        <div class="flex flex-row w-full justify-start items-center px-10">
+            <h3 class="text-2xl font-mono font-semibold w-1/2">Validity:</h3>
+            <h3 class="text-2xl font-mono w-1/2">{{rating}}</h3>
+        </div>
+        {% endif %}
+        <div class="flex flex-row w-full justify-center items-center px-10 gap-5">
+            <div class="flex items-center justify-center h-10 w-40 bg-green-700 text-white font-bold text-xl hover:bg-green-500 z-50 cursor-pointer rounded-lg">
+                <button type="button" id="paynow">Order Now</button>
+            </div>
+            <div class="flex items-center justify-center h-10 w-40 bg-blue-700 text-white font-bold text-xl hover:bg-blue-500 z-50 cursor-pointer rounded-lg">
+                <button type="button" id="addreview">Add A Review</button>
+            </div>
+        </div>  
     </div>
     <form method="POST" id="moveForm">
         {%csrf_token%}
         <input type="hidden" name="move" id="move" value=""/>
     </form> 
+    <form method="POST" id="orderForm">
+        {%csrf_token%}
+        <input name='img_url' value="{{img_url}}" type="hidden"/>
+        <input name='title' value="{{title}}" type="hidden"/>
+        <input name='artist' value="{{artist}}" type="hidden"/>
+        <input name='type' value="{{type}}" type="hidden"/>
+        <input name='price' value="{{price}}" type="hidden"/>
+        <input name='order' value="order" type="hidden"/>
+        <input name='lifetime' value="{{lifetime}}" type="hidden"/>
+        <input name='payment' value="{{payment}}" type="hidden"/>
+        <input name='description' value="{{description}}" type="hidden"/>
+        <input name='rating' value="{{rating}}" type="hidden"/>
+    </form> 
+    <form method="POST" id="reviewForm">
+        {%csrf_token%}
+        <input name='img_url' value="{{img_url}}" type="hidden"/>
+        <input name='title' value="{{title}}" type="hidden"/>
+        <input name='artist' value="{{artist}}" type="hidden"/>
+        <input name='type' value="{{type}}" type="hidden"/>
+        <input name='price' value="{{price}}" type="hidden"/>
+        <input name='review' value="review" type="hidden"/>
+        <input name='lifetime' value="{{lifetime}}" type="hidden"/>
+        <input name='payment' value="{{payment}}" type="hidden"/>
+        <input name='description' value="{{description}}" type="hidden"/>
+        <input name='rating' value="{{rating}}" type="hidden"/>
+    </form> 
+    <form method="POST" id="form" class="hidden">
+        {%csrf_token%}
+        <script src="https://checkout.razorpay.com/v1/checkout.js"    
+            data-key="{{key}}"  
+            data-amount="{{price}}"
+            data-currency="INR"
+            data-order_id="{{payment.id}}"   
+            data-buttontext=""  
+            data-name="Upcycle Corp"    
+            data-description="Your Step Towards Sustainability."    
+            data-image=""    
+            data-prefill.name="{% if group == 'Artist' %}{{user.artist.name}}{% else %}{{user.customer.name}}{% endif %}" 
+            data-prefill.email="{% if group == 'Artist' %}{{user.artist.email}}{% else %}{{user.customer.email}}{% endif %}" 
+            data-theme.color="#F37254">
+        </script>
+    </form>
     <div class="absolute flex items-center justify-center bottom-[398px] left-4 h-10 w-40 bg-transparent text-stone-900 font-bold text-xl hover:text-white z-50 cursor-pointer">
         <button type="button" id="next">NEXT</button>
     </div>
@@ -72,6 +147,12 @@
             if (event.target.id == "previous") {
                 $('#move').val('previous');
                 $('#moveForm').submit();
+            }
+            if (event.target.id == "paynow") {
+                $('#orderForm').submit();
+            }
+            if (event.target.id == "addreview") {
+                $('#reviewForm').submit();
             }
         });
     </script>

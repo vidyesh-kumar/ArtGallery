@@ -12,4 +12,6 @@ urlpatterns = [
     path("reception/", views.reception, name="reception"),
     path("profile/", views.profile, name="profile"),
     path("gallery/", views.gallery, name="gallery"),
+    path("order/", views.order, name="order"),
+    path("review/", views.review, name="review"),
 ]
