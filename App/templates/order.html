@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+{%load static%}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'CSS/styles.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>   
+    <title>Gallery Page</title>
+</head>
+<body>
+    <div>
+        <img src="{% static 'IMGS/OrderPage.png' %}" class="object-fit-fill w-screen h-screen" alt="HomePageBackground">
+    </div>  
+    <div class="absolute top-[103px] left-[185px] w-[369px] h-[270px] bg-white">
+        <img src="{% get_media_prefix %}{{img_url}}" class="w-[369px] h-[270px] object-contain" alt="Logo">
+    </div>
+    <div class="absolute top-[430px] left-[116px] w-[500px] h-[180px] bg-white rounded-xl shadow-2xl overflow-hidden">
+        <h1 class="flex w-full items-center justify-center bg-orange-700 h-12 text-white text-3xl">{{title}}</h1>
+        <div class="flex flex-col w-full h-fit items-center justify-center text-xl gap-3 py-5 px-10 font-semibold">
+            <div class="flex flex-row w-full items-center justify-center gap-2">
+                <h1 class="text-2xl w-1/2">Art By: </h1>
+                <h1 class="text-2xl w-1/2">{{artist}}</h1>
+            </div>
+            <div class="flex flex-row w-full items-center justify-center gap-2">
+                <h1 class="text-2xl w-1/2">Price: </h1>
+                <h1 class="text-2xl w-1/2">{{price}}</h1>
+            </div>
+            <button id="paynow">Buy Now</button>
+        </div>
+    </div>
+    <div>
+        <form method="POST" id="form">
+            {%csrf_token%}
+            <script src="https://checkout.razorpay.com/v1/checkout.js"    
+                data-key="{{key}}"  
+                data-amount="{{price}}"
+                data-currency="INR"
+                data-order_id="{{payment.id}}"   
+                data-buttontext=""  
+                data-name="ArtGallery"    
+                data-description="Payment For Art"    
+                data-image=""    
+                data-prefill.name="{{cname}}"    
+                data-prefill.email=""   
+                data-theme.color="#F37254">
+            </script>
+        </form>
+    </div>
+    <script>
+        $(document).ready(function(){
+            $("#paynow").click(function(){
+                $("#form").submit();
+            });
+        });
+    </script>
+</body>
+</html>

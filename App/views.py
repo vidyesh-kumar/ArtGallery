@@ -1,22 +1,27 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, logout as dj_logout, login as dj_login
-from .forms import NewUserForm
+from .forms import FilterArtForm, NewUserForm
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from .forms import ArtistUpdateForm,CustomerUpdateForm,ArtUpdateForm,OrderUpdateForm,ReviewUpdateForm
+from django.db.models import Avg
+from .forms import ArtistUpdateForm,CustomerUpdateForm,ArtUpdateForm,OrderUpdateForm,ReviewUpdateForm,ArtRatingForm,ArtistRatingForm
 from .models import Artist,Customer,Art,Review,Order
 from django.conf import settings
 import razorpay
 import datetime
 
+#Home Page
 def index(request):
     return render(request,'index.html')
 
+#Logout Function
+@login_required(login_url='login')
 def logout(request):
     dj_logout(request)
     return redirect("index")
-    
+ 
+#Login Page 
 def login(request):
     if request.method == 'POST':
         form = AuthenticationForm(request=request, data=request.POST)
@@ -34,6 +39,7 @@ def login(request):
     form = AuthenticationForm()
     return render(request,"login.html",{"form":form})
 
+#Register Page
 def register_request(request):
     form  = NewUserForm()
     if request.method == 'POST':
@@ -56,6 +62,7 @@ def register_request(request):
     context = {'form':form}
     return render(request,'register.html',context)
 
+#Create Profile Page
 @login_required(login_url='login')
 def updateInfo(request):
     if request.user.groups.filter(name="Artist").exists():
@@ -82,6 +89,7 @@ def updateInfo(request):
         else:
             return redirect('reception')
 
+#Reception Page
 @login_required(login_url='login')
 def reception(request):
     if request.user.groups.filter(name="Artist").exists():
@@ -104,6 +112,7 @@ def reception(request):
     return render(request,'reception.html',context)
 
 
+#Profile Page
 @login_required(login_url='login')
 def profile(request):
     if request.user.groups.filter(name="Artist").exists():
@@ -123,23 +132,44 @@ def profile(request):
                 return redirect('profile')
     return render(request,'profile.html',context)
 
+#Gallery Variables
 count = 0 #GalleryCount
-cartcount = 0 #CartCount
+filterdict = {} #Filter Dictionary
+#Gallery Page
 @login_required(login_url='login')
 def gallery(request):
     global count
-    first = Art.objects.values().first()
+    global filterdict
+    first = Art.objects.filter(sold=False).values().first()
     if request.method=="POST":
+        if 'filter' in request.POST:
+            form = FilterArtForm(request.POST)
+            if form.is_valid():
+                filterdict={}
+                f_rating = form.cleaned_data.get('rating')
+                f_start_price = form.cleaned_data.get('price')
+                f_type = form.cleaned_data.get('type')
+                if f_rating is not None:
+                    filterdict['rating__gte'] = f_rating 
+                if f_start_price is not None:
+                    filterdict['price__gte'] = f_start_price
+                if f_type != '':
+                    filterdict['type'] = f_type
+                print(filterdict)
+                first = Art.objects.filter(sold=False).filter(**filterdict).values()[count]     
+            else:
+                print(filterdict)
+                print(form.errors) 
         if 'move' in request.POST:
             if request.POST.get('move') == "next":
                 count += 1
             elif request.POST.get('move') == "previous":
                 count-=1
             if count < 0:
-                count = Art.objects.count()-1
-            elif count >= Art.objects.count():
+                count = Art.objects.filter(sold=False).filter(**filterdict).count()-1
+            elif count >= Art.objects.filter(sold=False).filter(**filterdict).count():
                 count = 0
-            first = Art.objects.values().all()[count]
+            first = Art.objects.filter(sold=False).filter(**filterdict).values()[count]
         if 'order'in request.POST:
             form = OrderUpdateForm()
             price = request.POST.get('price')
@@ -163,10 +193,8 @@ def gallery(request):
                 order.croleid=request.user.customer.CustomerID
             order.Odate = datetime.datetime.now()   
             order.amount = float(amount)
-            order.artId = Art.objects.filter(title=title,artist=artist,type=type,description=desc,image_url=url,lifetime=lifetime,payment=payment_type,rating=rating).first()
+            order.artId = Art.objects.filter(title=title,artist=artist,type=type,description=desc,image_url=url,lifetime=lifetime,payment=payment_type,rating=rating,sold=False).first()
             order.save()
-            client = razorpay.Client(auth=(settings.RAZORPAY_KEY,settings.RAZORPAY_SECRET))
-            payment = client.order.create({"amount":float(amount),"currency":"INR","payment_capture":"1"})
             return redirect('order')
         if 'review' in request.POST:
             title = request.POST.get('title')
@@ -177,7 +205,7 @@ def gallery(request):
             desc= request.POST.get('description')
             rating = request.POST.get('rating')
             price = request.POST.get('price')
-            artist=Artist.objects.filter(name=request.POST.get('artist')).first()
+            artist=Artist.objects.filter(name=request.POST.get('artist'),sold=False).first()
             form = ReviewUpdateForm()
             review = form.save(commit=False)
             if request.user.groups.filter(name="Artist").exists():
@@ -189,7 +217,7 @@ def gallery(request):
                 review.crole="Customer"
                 review.croleid=request.user.customer.CustomerID
             review.date = datetime.datetime.now() 
-            review.art = Art.objects.filter(title=title,artist=artist,type=type,description=desc,image_url=url,lifetime=lifetime,payment=payment_type,rating=rating,price=price).first()
+            review.art = Art.objects.filter(title=title,artist=artist,type=type,description=desc,image_url=url,lifetime=lifetime,payment=payment_type,rating=rating,price=price,sold=False).first()
             review.save()
             return redirect('review')
             
@@ -207,18 +235,70 @@ def gallery(request):
             }
     return render(request,'gallery.html',context)
 
+#Order Page
 @login_required(login_url='login')
 def order(request):
-    return render(request,'order.html')
+    obj = Order.objects.last()
+    payment={}
+    if request.method == "POST":
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY,settings.RAZORPAY_SECRET))
+        payment = client.order.create({"amount":obj.amount,"currency":"INR","payment_capture":"1"})
+        orderObj = Order.objects.get(OrderID=obj.OrderID)
+        orderObj.paid=True
+        orderObj.save()
+        if obj.artId.payment == "Onetime Payment":
+            artObj = Art.objects.get(ArtID=obj.artId.ArtID)
+            artObj.sold=True
+            artObj.save()
+        return redirect('success')
+    context = { 'payment':payment,
+                'img_url':obj.artId.image_url,
+                'artist':obj.artId.artist,
+                'title':obj.artId.title,
+                'price':obj.amount,
+                'payment_type':obj.artId.payment,
+                'lifetime':obj.artId.lifetime,
+                'cname':obj.cname,
+                'key':settings.RAZORPAY_KEY
+                }
+    return render(request,'order.html',context)
 
+#Review Page
+@login_required(login_url='login')
 def review(request):
     obj = Review.objects.last()
+    if request.method == "POST":
+        form = ReviewUpdateForm(request.POST,instance=obj)
+        if form.is_valid():
+            object=form.save(commit=False)
+            object.showRev = True
+            object.save()
+            Artform = ArtRatingForm(instance=obj.art)
+            artobj= Artform.save(commit=False)
+            artobj.rating = round(Review.objects.filter(art=obj.art).aggregate(Avg('rating'))['rating__avg'],2)
+            artobj.save()
+            Artistform = ArtistRatingForm(instance=obj.art.artist)
+            artistobj= Artistform.save(commit=False)
+            artistobj.rating = round(Art.objects.filter(artist=obj.art.artist).aggregate(Avg('rating'))['rating__avg'],2)
+            artistobj.save()
+    comments = Review.objects.filter(art=obj.art,showRev=True)
     context = {
         'cname':obj.cname,
         'crole':obj.crole,
         'img_url':obj.art.image_url,
-        'rating':obj.rating,
+        'rating':obj.art.rating,
         'title':obj.art.title,
-        'artist':obj.art.artist.name
-        }
+        'artist':obj.art.artist.name,
+        'comments': comments
+        }     
     return render(request,'review.html',context)
+
+#Payment Success Page
+@login_required(login_url='login')
+def success(request):
+    return render(request,'success.html')
+
+#Filtererror Page
+@login_required(login_url='login')
+def filtererror(request):
+    return render(request,'filtererror.html')

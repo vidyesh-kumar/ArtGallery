@@ -41,6 +41,7 @@ class Art(models.Model):
     payment=models.TextField()
     lifetime = models.TextField()
     rating = models.FloatField(default=0)
+    sold = models.BooleanField(default=False)
     def __str__(self):
         return self.title
     
@@ -52,6 +53,7 @@ class Order(models.Model):
     crole = models.TextField(max_length=100,default="")
     croleid = models.IntegerField(default=0)
     artId = models.ForeignKey(Art, on_delete=models.CASCADE)
+    paid = models.BooleanField(default=False)
     def __str__(self):
         return self.artId.title
     
@@ -63,6 +65,7 @@ class Review(models.Model):
     cname = models.TextField(max_length=100,default="")
     crole = models.TextField(max_length=100,default="")
     croleid = models.IntegerField(default=0)
+    showRev = models.BooleanField(default=False)
     art = models.ForeignKey(Art, on_delete=models.CASCADE)
     def __str__(self):
         return self.art.title

@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Artist,Customer,Art,Order,Review
-from PIL import Image
 
 class NewUserForm(UserCreationForm):
     class Meta:
@@ -39,4 +38,19 @@ class OrderUpdateForm(forms.ModelForm):
 class ReviewUpdateForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ['date','rating','comment']
+        fields = ['rating','comment']
+
+class ArtRatingForm(forms.ModelForm):
+    class Meta:
+        model = Art
+        fields = ['rating']
+class ArtistRatingForm(forms.ModelForm):
+    class Meta:
+        model = Art
+        fields = ['rating']
+    
+
+class FilterArtForm(forms.Form):
+    type = forms.CharField(required=False)
+    rating = forms.FloatField(required=False)
+    price = forms.FloatField(required=False)
