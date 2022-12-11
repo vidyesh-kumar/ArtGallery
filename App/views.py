@@ -155,8 +155,10 @@ def gallery(request):
                     filterdict['price__gte'] = f_start_price
                 if f_type != '':
                     filterdict['type'] = f_type
-                print(filterdict)
-                first = Art.objects.filter(sold=False).filter(**filterdict).values()[count]     
+                try:
+                    first = Art.objects.filter(sold=False).filter(**filterdict).values()[count]  
+                except:
+                    redirect('filtererror')   
             else:
                 print(filterdict)
                 print(form.errors) 
