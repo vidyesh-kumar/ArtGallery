@@ -227,18 +227,21 @@ def gallery(request):
             review.art = Art.objects.filter(title=title,artist=artist,type=type,description=desc,image_url=url,lifetime=lifetime,payment=payment_type,rating=rating,price=price,sold=False).first()
             review.save()
             return redirect('review')
-            
+    if request.user.groups.filter(name="Artist").exists():
+        context = {'group':'Artist'}
+    else:
+        context = {'group':'Customer'}  
     if first is None:
-        return render(request,'galleryclosed.html')
-    context={'img_url':first['image_url'],
-             'artist':Artist.objects.get(ArtistID=first['artist_id']),
-             'title':first['title'],
-             'description':first['description'],
-             'type':first['type'],
-             'price':first['price'],
-             'payment':first['payment'],
-             'lifetime':first['lifetime'],
-             'rating':first['rating']
+        return render(request,'galleryclosed.html',context)
+    context+={'img_url':first['image_url'],
+                'artist':Artist.objects.get(ArtistID=first['artist_id']),
+                'title':first['title'],
+                'description':first['description'],
+                'type':first['type'],
+                'price':first['price'],
+                'payment':first['payment'],
+                'lifetime':first['lifetime'],
+                'rating':first['rating'],
             }
     return render(request,'gallery.html',context)
 
