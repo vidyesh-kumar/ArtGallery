@@ -267,11 +267,16 @@ def order(request):
                 'artist':obj.artId.artist,
                 'title':obj.artId.title,
                 'price':obj.amount,
+                'amount':obj.amount/100,
                 'payment_type':obj.artId.payment,
                 'lifetime':obj.artId.lifetime,
                 'cname':obj.cname,
                 'key':settings.RAZORPAY_KEY
                 }
+    if request.user.groups.filter(name="Artist").exists():
+        context['group']='Artist'
+    else:
+        context['group']='Customer'    
     return render(request,'order.html',context)
 
 #Review Page
