@@ -11,7 +11,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;1,200;1,300&family=Roboto:ital,wght@0,100;0,300;1,100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Space+Grotesk&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
           theme: {
@@ -20,7 +20,8 @@
                 /*Template Colours Here*/
               },
               fontFamily:{
-                /*Fonts Here*/
+                heading:'Permanent Marker',
+                body:'Space Grotesk'
               }
             }
           }
@@ -28,12 +29,8 @@
     </script>
 </head>
 <body>
-    <!--Navbar Tailwind-->
-    <h1>Navbar Here</h1>
     {%block content%}
     
     {%endblock%}
-    <h1>Footer Here</h1>
-    <!--Footer Tailwind-->
 </body>
 </html>

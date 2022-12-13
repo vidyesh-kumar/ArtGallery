@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+{%extends 'template.html'%}
 {%load static%}
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'CSS/styles.css' %}">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>   
     <title>Reception</title>
 </head>
 <body>
+    {%block content%}
     <div class="flex justify-center">
         <img src="{% static 'IMGS/reception.jpg' %}" class="w-screen h-screen" alt="PageBackground">
         <div class="absolute bottom-5 w-[80%] bg-white rounded-xl h-[30%]">
@@ -68,5 +68,6 @@
             $("#ArtModal").toggleClass('hidden');
         });
     </script>
+    {%endblock%}
 </body>
 </html>

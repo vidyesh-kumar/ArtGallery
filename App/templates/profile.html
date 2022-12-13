@@ -27,8 +27,8 @@
                 <p >{{user.artist.name}}</p>
             </div>
             <div class="flex  w-1/2 m-4">
-                <label for="id_about" class="w-1/2">About:</label>
-                <p >{{user.artist.about}}</p>
+                <label for="id_about" class="w-1/2">Address:</label>
+                <p >{{user.artist.address}}</p>
             </div>
             <div class="flex  w-1/2 m-4">
                 <label for="id_location" class="w-1/2">Country:</label>
@@ -56,8 +56,8 @@
                 <p >{{user.customer.name}}</p>
             </div>
             <div class="flex  w-1/2 m-4">
-                <label for="id_about" class="w-1/2">About:</label>
-                <p >{{user.customer.about}}</p>
+                <label for="id_about" class="w-1/2">Address:</label>
+                <p >{{user.customer.address}}</p>
             </div>
             <div class="flex  w-1/2 m-4">
                 <label for="id_location" class="w-1/2">Country:</label>
@@ -92,12 +92,17 @@
                         <input type="text" id="name" name="name" class="w-full" value="{% if group == 'Artist' %}{{user.artist.name}}{% else %}{{user.customer.name}}{% endif %}"><br>
                     </div>
                     <div class="flex flex-row gap-3 w-full">
-                        <label for="about" class="w-1/2">About:</label>
-                        <textarea name="about" id="about" cols="30" rows="5" value="{% if group == 'Artist' %}{{user.artist.about}}{% else %}{{user.customer.about}}{% endif %}" class="w-full"></textarea>
+                        <label for="address" class="w-1/2">Address:</label>
+                        <textarea name="address" id="address" cols="30" rows="5" value="{% if group == 'Artist' %}{{user.artist.about}}{% else %}{{user.customer.about}}{% endif %}" class="w-full"></textarea>
                     </div>
                     <div class="flex flex-row gap-3 w-full">
                         <label for="country" class="w-1/2">Country:</label>
-                        <input type="text" id="country" name="country" class="w-full" value="{% if group == 'Artist' %}{{user.artist.country}}{% else %}{{user.customer.country}}{% endif %}"><br>
+                        <select name="country" class="w-full indent-4 font-body h-10 border border-gray-300 rounded-md" value="{% if group == 'Artist' %}{{user.artist.country}}{% else %}{{user.customer.country}}{% endif %}" id="id_country">
+                            <option value="" selected hidden disabled>Choose A Country</option>
+                            {% for country in countries %}
+                                <option value="{{country}}">{{country}}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="flex flex-row gap-3 w-full">
                         <label for="email" class="w-1/2">Email:</label>

@@ -11,7 +11,7 @@ class Artist(models.Model):
     country = models.CharField(max_length=100,blank=True,null=False)
     email=models.EmailField(max_length=100,blank=True)
     profile_pic = models.ImageField(default='Profile/avatar.png',upload_to='Profile')
-    about = models.TextField(max_length=300,blank=True)
+    address = models.TextField(max_length=300,blank=True)
     phone = PhoneNumberField(blank=True,null=True)
     rating = models.FloatField(default=0)
     def __str__(self):
@@ -24,7 +24,7 @@ class Customer(models.Model):
     country = models.CharField(max_length=100,blank=True,null=False)
     email=models.EmailField(max_length=100,blank=True)
     profile_pic = models.ImageField(default='Profile/avatar.png',upload_to='Profile')
-    about = models.TextField(max_length=300,blank=True)
+    address = models.TextField(max_length=300,blank=True)
     phone = PhoneNumberField(blank=True,null=True)
     def __str__(self):
         return self.name

@@ -10,38 +10,44 @@ from .models import Artist,Customer,Art,Review,Order
 from django.conf import settings
 import razorpay
 import datetime
+country = ['Afghanistan', 'Aland Islands', 'Albania', 'Algeria', 'American Samoa', 'Andorra', 'Angola', 'Anguilla', 'Antarctica', 'Antigua and Barbuda', 'Argentina', 'Armenia', 'Aruba', 'Australia', 'Austria', 'Azerbaijan', 'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium', 'Belize', 'Benin', 'Bermuda', 'Bhutan', 'Bolivia, Plurinational State of', 'Bonaire, Sint Eustatius and Saba', 'Bosnia and Herzegovina', 'Botswana', 'Bouvet Island', 'Brazil', 'British Indian Ocean Territory', 'Brunei Darussalam', 'Bulgaria', 'Burkina Faso', 'Burundi', 'Cambodia', 'Cameroon', 'Canada', 'Cape Verde', 'Cayman Islands', 'Central African Republic', 'Chad', 'Chile', 'China', 'Christmas Island', 'Cocos (Keeling) Islands', 'Colombia', 'Comoros', 'Congo', 'Congo, The Democratic Republic of the', 'Cook Islands', 'Costa Rica', "Côte d'Ivoire", 'Croatia', 'Cuba', 'Curaçao', 'Cyprus', 'Czech Republic', 'Denmark', 'Djibouti', 'Dominica', 'Dominican Republic', 'Ecuador', 'Egypt', 'El Salvador', 'Equatorial Guinea', 'Eritrea', 'Estonia', 'Ethiopia', 'Falkland Islands (Malvinas)', 'Faroe Islands', 'Fiji', 'Finland', 'France', 'French Guiana', 'French Polynesia', 'French Southern Territories', 'Gabon', 'Gambia', 'Georgia', 'Germany', 'Ghana', 'Gibraltar', 'Greece', 'Greenland', 'Grenada', 'Guadeloupe', 'Guam', 'Guatemala', 'Guernsey', 'Guinea', 'Guinea-Bissau', 'Guyana', 'Haiti', 'Heard Island and McDonald Islands', 'Holy See (Vatican City State)', 'Honduras', 'Hong Kong', 'Hungary', 'Iceland', 'India', 'Indonesia', 'Iran, Islamic Republic of', 'Iraq', 'Ireland', 'Isle of Man', 'Israel', 'Italy', 'Jamaica', 'Japan', 'Jersey', 'Jordan', 'Kazakhstan', 'Kenya', 'Kiribati', "Korea, Democratic People's Republic of", 'Korea, Republic of', 'Kuwait', 'Kyrgyzstan', "Lao People's Democratic Republic", 'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Libya', 'Liechtenstein', 'Lithuania', 'Luxembourg', 'Macao', 'Macedonia, Republic of', 'Madagascar', 'Malawi', 'Malaysia', 'Maldives', 'Mali', 'Malta', 'Marshall Islands', 'Martinique', 'Mauritania', 'Mauritius', 'Mayotte', 'Mexico', 'Micronesia, Federated States of', 'Moldova, Republic of', 'Monaco', 'Mongolia', 'Montenegro', 'Montserrat', 'Morocco', 'Mozambique', 'Myanmar', 'Namibia', 'Nauru', 'Nepal', 'Netherlands', 'New Caledonia', 'New Zealand', 'Nicaragua', 'Niger', 'Nigeria', 'Niue', 'Norfolk Island', 'Northern Mariana Islands', 'Norway', 'Oman', 'Pakistan', 'Palau', 'Palestinian Territory, Occupied', 'Panama', 'Papua New Guinea', 'Paraguay', 'Peru', 'Philippines', 'Pitcairn', 'Poland', 'Portugal', 'Puerto Rico', 'Qatar', 'Réunion', 'Romania', 'Russian Federation', 'Rwanda', 'Saint Barthélemy', 'Saint Helena, Ascension and Tristan da Cunha', 'Saint Kitts and Nevis', 'Saint Lucia', 'Saint Martin (French part)', 'Saint Pierre and Miquelon', 'Saint Vincent and the Grenadines', 'Samoa', 'San Marino', 'Sao Tome and Principe', 'Saudi Arabia', 'Senegal', 'Serbia', 'Seychelles', 'Sierra Leone', 'Singapore', 'Sint Maarten (Dutch part)', 'Slovakia', 'Slovenia', 'Solomon Islands', 'Somalia', 'South Africa', 'South Georgia and the South Sandwich Islands', 'Spain', 'Sri Lanka', 'Sudan', 'Suriname', 'South Sudan', 'Svalbard and Jan Mayen', 'Swaziland', 'Sweden', 'Switzerland', 'Syrian Arab Republic', 'Taiwan, Province of China', 'Tajikistan', 'Tanzania, United Republic of', 'Thailand', 'Timor-Leste', 'Togo', 'Tokelau', 'Tonga', 'Trinidad and Tobago', 'Tunisia', 'Turkey', 'Turkmenistan', 'Turks and Caicos Islands', 'Tuvalu', 'Uganda', 'Ukraine', 'United Arab Emirates', 'United Kingdom', 'United States', 'United States Minor Outlying Islands', 'Uruguay', 'Uzbekistan', 'Vanuatu', 'Venezuela, Bolivarian Republic of', 'Viet Nam', 'Virgin Islands, British', 'Virgin Islands, U.S.', 'Wallis and Futuna', 'Yemen', 'Zambia', 'Zimbabwe']
 
 #Home Page
 def index(request):
-    return render(request,'index.html')
+    context={}
+    if request.user.is_authenticated:
+        if request.user.groups.filter(name="Artist").exists():
+            context = {"usertype":request.user.artist}
+        else:
+            context = {"usertype":request.user.customer}
+    return render(request,'index.html',context)
 
 #Logout Function
-@login_required(login_url='login')
+
 def logout(request):
     dj_logout(request)
-    return redirect("index")
+    return redirect("login")
  
 #Login Page 
 def login(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request=request, data=request.POST)
+        form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(username=username,password=password)
             if user is not None:
                 dj_login(request, user)
-                return redirect('index')
+                return redirect('updateInfo')
             else:
                 messages.error(request, "Invalid username or password.")
         else:
             messages.error(request, "Invalid username or password.")
     form = AuthenticationForm()
-    return render(request,"login.html",{"form":form})
+    return render(request,"login.html")
 
 #Register Page
 def register_request(request):
-    form  = NewUserForm()
     if request.method == 'POST':
         form = NewUserForm(request.POST)
         if form.is_valid():
@@ -59,35 +65,34 @@ def register_request(request):
                 return redirect('login')
             else:
                 messages.error(request, "Please Choose an Account Type")
-    context = {'form':form}
-    return render(request,'register.html',context)
+    return render(request,'register.html')
 
 #Create Profile Page
 @login_required(login_url='login')
 def updateInfo(request):
+    global country
     if request.user.groups.filter(name="Artist").exists():
         print(request.user.artist.country)
         if request.user.artist.country == "":
             if request.method == 'POST':
-                form = ArtistUpdateForm(request.POST,instance=request.user.artist)
+                form = ArtistUpdateForm(request.POST,request.FILES,instance=request.user.artist)
                 if form.is_valid():
                     form.save()
-                    return redirect('reception')
-            form = ArtistUpdateForm(instance=request.user.artist)
-            return render(request,'updateInfo.html',{'form':form})
+                    return redirect('index')
+            return render(request,'updateInfo.html',{'countries':country})
         else:
-            return redirect('reception')
+            return redirect('index')
     else:   
         if request.user.customer.country == "":
             if request.method == 'POST':
-                form = CustomerUpdateForm(request.POST,instance=request.user.customer)
+                form = CustomerUpdateForm(request.POST,request.FILES,instance=request.user.customer)
                 if form.is_valid():
                     form.save()
-                    return redirect('reception')
+                    return redirect('index')
             form = CustomerUpdateForm(instance=request.user.customer)
-            return render(request,'updateInfo.html',{'form':form})
+            return render(request,'updateInfo.html',{'countries':country})
         else:
-            return redirect('reception')
+            return redirect('index')
 
 #Reception Page
 @login_required(login_url='login')
@@ -116,7 +121,7 @@ def reception(request):
 @login_required(login_url='login')
 def profile(request):
     if request.user.groups.filter(name="Artist").exists():
-        context = {'group':'Artist'}
+        context = {'group':'Artist','countries':country}
         if request.method == 'POST':
             form = ArtistUpdateForm(request.POST,request.FILES,instance=request.user.artist)
             print(request.FILES)
@@ -124,7 +129,7 @@ def profile(request):
                 form.save()
                 return redirect('profile')
     else:
-        context = {'group':'Customer'}
+        context = {'group':'Customer','countries':country}
         if request.method == 'POST':
             form = CustomerUpdateForm(request.POST,request.FILES,instance=request.user.customer)
             if form.is_valid():
@@ -207,7 +212,7 @@ def gallery(request):
             desc= request.POST.get('description')
             rating = request.POST.get('rating')
             price = request.POST.get('price')
-            artist=Artist.objects.filter(name=request.POST.get('artist'),sold=False).first()
+            artist=Artist.objects.filter(name=request.POST.get('artist')).first()
             form = ReviewUpdateForm()
             review = form.save(commit=False)
             if request.user.groups.filter(name="Artist").exists():

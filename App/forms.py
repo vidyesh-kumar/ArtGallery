@@ -18,12 +18,12 @@ class NewUserForm(UserCreationForm):
 class ArtistUpdateForm(forms.ModelForm):
     class Meta:
         model = Artist
-        fields = ['name','country','email','about','phone',"profile_pic"]
+        fields = ['name','country','email','address','phone',"profile_pic"]
 
 class CustomerUpdateForm(forms.ModelForm):
     class Meta:
         model = Customer
-        fields = ['name','country','email','about','phone']
+        fields = ['name','country','email','address','phone','profile_pic']
 
 class ArtUpdateForm(forms.ModelForm):
     class Meta:
