@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-{%extends 'template.html'%}
-{%load static%}
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'CSS/styles.css' %}">
-    <title>Reception</title>
+    <title>Art Gallery Reception</title>
 </head>
+{%extends 'template.html'%}
+{%load static%}
 <body>
     {%block content%}
     <div class="absolute top-0 hidden sidebar z-50">
@@ -33,6 +32,9 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="absolute top-10 left-0 font-body text-white text-2xl">
+        <a class="bg-orange-700 h-12 w-32 hover:bg-orange-600 block  flex items-center justify-center" href="{%url 'index'%}"><- Home</a>
     </div>
     <div class="flex justify-center font-body">
         <img src="{% static 'IMGS/reception.jpg' %}" class="w-screen h-screen" alt="PageBackground">
@@ -60,11 +62,11 @@
                         {% csrf_token %}
                         <div class="flex flex-row gap-2 w-full">
                             <label for="title" class="w-1/2">Title</label>
-                            <input type="text" placeholder="Art Title" name="title" id="title" class="indent-4 font-body h-10 border border-gray-400 rounded-md w-1/2">
+                            <input type="text" placeholder="Art Title" name="title" id="title" class="indent-4 font-body h-10 border border-gray-400 rounded-md w-full">
                         </div>
                         <div class="flex flex-row gap-2 w-full">
                             <label for="description" class="w-1/2">Description</label>
-                            <textarea name="description" id="description" cols="30" rows="5" class="border border-black rounded-md w-1/2 resize-none"></textarea>
+                            <textarea name="description" id="description" class="w-full indent-4 font-body h-32 border border-gray-300 rounded-md resize-none py-2" placeholder="Add Description"></textarea>
                         </div>
                         <div class="flex flex-row gap-2 w-full">
                             <label for="image_url" class="w-1/2">Image</label>
@@ -72,7 +74,7 @@
                         </div>
                         <div class="flex flex-row gap-2 w-full">
                             <label for="type" class="w-1/2">Category</label>
-                            <select name="type" id="type" class="indent-4 font-body h-10 border border-gray-400 rounded-md w-1/2">
+                            <select name="type" id="type" class="indent-4 font-body h-10 border border-gray-400 rounded-md w-full">
                                 <option value="" selected hidden disabled>Select Category</option>
                                 <option value="Painting">Painting</option>
                                 <option value="Photography">Photography</option>
@@ -81,7 +83,7 @@
                         </div>
                         <div class="flex flex-row gap-2 w-full">
                             <label for="price" class="w-1/2">Price</label>
-                            <input type="number" name="price" id="price" class="indent-4 font-body h-10 border border-gray-400 rounded-md w-1/2" placeholder="Price ( In Rupees )">
+                            <input type="number" name="price" id="price" class="indent-4 font-body h-10 border border-gray-400 rounded-md w-full" placeholder="Price ( In Rupees )">
                         </div>
                         <button type="submit" class="mx-auto bg-blue-500 hover:bg-blue-800 rounded-md flex items-center justify-center w-1/3 h-12 text-white font-semibold text-xl">Add Art</button>
                     </form>
