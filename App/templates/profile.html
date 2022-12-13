@@ -64,19 +64,19 @@
                     {% csrf_token %}
                     <div class="flex flex-row gap-2 w-full">
                         <label for="uname" class="w-1/2">Username:</label>
-                        <input type="text" id="uname" name="uname" class="w-full indent-4 font-body h-10 border border-gray-300 rounded-md" placeholder="{{user.username}}"><br>
+                        <input type="text" id="uname" name="uname" class="w-full indent-4 font-body h-10 border border-gray-400 rounded-md" placeholder="{{user.username}}"><br>
                     </div>
                     <div class="flex flex-row gap-2 w-full">
                         <label for="name" class="w-1/2">Name:</label>
-                        <input type="text" id="name" name="name" class="w-full indent-4 font-body h-10 border border-gray-300 rounded-md" placeholder="{% if group == 'Artist' %}{{user.artist.name}}{% else %}{{user.customer.name}}{% endif %}"><br>
+                        <input type="text" id="name" name="name" class="w-full indent-4 font-body h-10 border border-gray-400 rounded-md" placeholder="{% if group == 'Artist' %}{{user.artist.name}}{% else %}{{user.customer.name}}{% endif %}"><br>
                     </div>
                     <div class="flex flex-row gap-2 w-full">
                         <label for="address" class="w-1/2">Address:</label>
-                        <textarea name="address" id="address" class="w-full indent-4 font-body h-32 border border-gray-300 rounded-md resize-none py-2" placeholder="{% if group == 'Artist' %}{{user.artist.address}}{% else %}{{user.customer.address}}{% endif %}" class="w-full"></textarea>
+                        <textarea name="address" id="address" class="w-full indent-4 font-body h-32 border border-gray-400 rounded-md resize-none py-2" placeholder="{% if group == 'Artist' %}{{user.artist.address}}{% else %}{{user.customer.address}}{% endif %}" class="w-full"></textarea>
                     </div>
                     <div class="flex flex-row gap-2 w-full">
                         <label for="country" class="w-1/2">Country:</label>
-                        <select name="country" class="w-full indent-4 font-body h-10 border border-gray-300 rounded-md" id="id_country">
+                        <select name="country" class="w-full indent-4 font-body h-10 border border-gray-400 rounded-md" id="id_country">
                             <option value="" selected hidden disabled>Choose A Country</option>
                             {% for country in countries %}
                                 {%if country == user.artist.country or country == user.customer.country%}
@@ -89,11 +89,11 @@
                     </div>
                     <div class="flex flex-row gap-2 w-full">
                         <label for="email" class="w-1/2">Email:</label>
-                        <input type="text" id="email" name="email" class="w-full indent-4 font-body h-10 border border-gray-300 rounded-md" placeholder="{% if group == 'Artist' %}{{user.artist.email}}{% else %}{{user.customer.email}}{% endif %}"><br>
+                        <input type="text" id="email" name="email" class="w-full indent-4 font-body h-10 border border-gray-400 rounded-md" placeholder="{% if group == 'Artist' %}{{user.artist.email}}{% else %}{{user.customer.email}}{% endif %}"><br>
                     </div>
                     <div class="flex flex-row gap-2 w-full">
                         <label for="phone" class="w-1/2">Phone No:</label>
-                        <input type="text" id="phone" name="phone" class="w-full indent-4 font-body h-10 border border-gray-300 rounded-md" placeholder="{% if group == 'Artist' %}{{user.artist.phone}}{% else %}{{user.customer.phone}}{% endif %}"><br>
+                        <input type="text" id="phone" name="phone" class="w-full indent-4 font-body h-10 border border-gray-400 rounded-md" placeholder="{% if group == 'Artist' %}{{user.artist.phone}}{% else %}{{user.customer.phone}}{% endif %}"><br>
                     </div>
                     <div class="flex flex-row gap-2 w-full">
                         <label for="profile_pic" class="w-1/2">Profile Pic:</label>

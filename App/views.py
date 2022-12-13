@@ -145,6 +145,7 @@ filterdict = {} #Filter Dictionary
 def gallery(request):
     global count
     global filterdict
+    context={}
     first = Art.objects.filter(sold=False).values().first()
     if request.method=="POST":
         if 'filter' in request.POST:
@@ -228,21 +229,21 @@ def gallery(request):
             review.save()
             return redirect('review')
     if request.user.groups.filter(name="Artist").exists():
-        context = {'group':'Artist'}
+        context['group']='Artist'
     else:
-        context = {'group':'Customer'}  
+        context['group']='Customer'
     if first is None:
         return render(request,'galleryclosed.html',context)
-    context+={'img_url':first['image_url'],
-                'artist':Artist.objects.get(ArtistID=first['artist_id']),
-                'title':first['title'],
-                'description':first['description'],
-                'type':first['type'],
-                'price':first['price'],
-                'payment':first['payment'],
-                'lifetime':first['lifetime'],
-                'rating':first['rating'],
-            }
+    
+    context['img_url']=first['image_url']
+    context['artist']=Artist.objects.get(ArtistID=first['artist_id'])
+    context['title']=first['title']
+    context['description']=first['description']
+    context['type']=first['type']
+    context['price']=first['price']
+    context['payment']=first['payment']
+    context['lifetime']=first['lifetime']
+    context['rating']=first['rating']
     return render(request,'gallery.html',context)
 
 #Order Page
