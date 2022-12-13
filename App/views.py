@@ -145,7 +145,7 @@ filterdict = {} #Filter Dictionary
 def gallery(request):
     global count
     global filterdict
-    context={}
+    context = {}
     first = Art.objects.filter(sold=False).values().first()
     if request.method=="POST":
         if 'filter' in request.POST:
@@ -164,10 +164,7 @@ def gallery(request):
                 try:
                     first = Art.objects.filter(sold=False).filter(**filterdict).values()[count]  
                 except:
-                    redirect('filtererror')   
-            else:
-                print(filterdict)
-                print(form.errors) 
+                    return redirect('filtererror')    
         if 'move' in request.POST:
             if request.POST.get('move') == "next":
                 count += 1
