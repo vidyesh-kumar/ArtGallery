@@ -14,6 +14,8 @@ country = ['Afghanistan', 'Aland Islands', 'Albania', 'Algeria', 'American Samoa
 
 #Home Page
 def index(request):
+    global filterdict
+    filterdict={}
     context={}
     if request.user.is_authenticated:
         if request.user.groups.filter(name="Artist").exists():
@@ -97,6 +99,8 @@ def updateInfo(request):
 #Reception Page
 @login_required(login_url='login')
 def reception(request):
+    global filterdict
+    filterdict={}
     if request.user.groups.filter(name="Artist").exists():
         context = {'group':'Artist'}
         if request.method == 'POST':
@@ -152,12 +156,12 @@ def gallery(request):
     global count
     global filterdict
     context = {}
-    filterdict={}
     first = Art.objects.filter(sold=False).values().first()
     if request.method=="POST":
         if 'filter' in request.POST:
             form = FilterArtForm(request.POST)
             if form.is_valid():
+                filterdict = {}
                 f_rating = form.cleaned_data.get('rating')
                 f_start_price = form.cleaned_data.get('price')
                 f_type = form.cleaned_data.get('type')
@@ -253,6 +257,8 @@ def gallery(request):
 #Order Page
 @login_required(login_url='login')
 def order(request):
+    global filterdict
+    filterdict={}
     obj = Order.objects.last()
     payment={}
     if request.method == "POST":
@@ -288,6 +294,8 @@ def order(request):
 #Review Page
 @login_required(login_url='login')
 def review(request):
+    global filterdict
+    filterdict={}
     obj = Review.objects.last()
     if request.method == "POST":
         form = ReviewUpdateForm(request.POST,instance=obj)
@@ -325,5 +333,7 @@ def success(request):
 #Filtererror Page
 @login_required(login_url='login')
 def filtererror(request):
+    global filterdict
+    filterdict={}
     return render(request,'filtererror.html')
 

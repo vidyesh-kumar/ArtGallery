@@ -47,7 +47,7 @@
                             <a class="bg-yellow-300 rounded-md text-xl w-[200px] h-[50px] hover:bg-yellow-400 flex items-center justify-center" href="{% url 'gallery' %}">Visit Gallery</a>
                             <a class="bg-yellow-300 rounded-md text-xl w-[200px] h-[50px] hover:bg-yellow-400 flex items-center justify-center" href="{% url 'profile' %}">View Profile</a>
                     {%else%}
-                        <button class="bg-yellow-300 rounded-md text-xl w-[200px] h-[50px] hover:bg-yellow-400"><a href="">Visit Gallery</a></button>
+                        <button class="bg-yellow-300 rounded-md text-xl w-[200px] h-[50px] hover:bg-yellow-400"><a href="{% url 'gallery' %}">Visit Gallery</a></button>
                         <button class="bg-yellow-300 rounded-md text-xl w-[200px] h-[50px] hover:bg-yellow-400"><a href="{% url 'profile' %}">View Profile</a></button>
                     {%endif%}
                 </div>
