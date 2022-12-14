@@ -121,7 +121,10 @@ def reception(request):
 @login_required(login_url='login')
 def profile(request):
     if request.user.groups.filter(name="Artist").exists():
-        context = {'group':'Artist','countries':country}
+        context = {'group':'Artist',
+                   'countries':country,
+                   'range':range(1,6)
+                 }
         if request.method == 'POST':
             form = ArtistUpdateForm(request.POST,request.FILES,instance=request.user.artist)
             print(request.FILES)
@@ -129,7 +132,10 @@ def profile(request):
                 form.save()
                 return redirect('profile')
     else:
-        context = {'group':'Customer','countries':country}
+        context = {'group':'Customer',
+                   'countries':country,
+                   'range':range(1,6)
+                   }
         if request.method == 'POST':
             form = CustomerUpdateForm(request.POST,request.FILES,instance=request.user.customer)
             if form.is_valid():
@@ -146,12 +152,12 @@ def gallery(request):
     global count
     global filterdict
     context = {}
+    filterdict={}
     first = Art.objects.filter(sold=False).values().first()
     if request.method=="POST":
         if 'filter' in request.POST:
             form = FilterArtForm(request.POST)
             if form.is_valid():
-                filterdict={}
                 f_rating = form.cleaned_data.get('rating')
                 f_start_price = form.cleaned_data.get('price')
                 f_type = form.cleaned_data.get('type')
@@ -241,6 +247,7 @@ def gallery(request):
     context['payment']=first['payment']
     context['lifetime']=first['lifetime']
     context['rating']=first['rating']
+    context['range']=range(1,6)
     return render(request,'gallery.html',context)
 
 #Order Page
@@ -254,6 +261,7 @@ def order(request):
         orderObj = Order.objects.get(OrderID=obj.OrderID)
         orderObj.paid=True
         orderObj.save()
+        Order.objects.filter(paid=False).delete()
         if obj.artId.payment == "Onetime Payment":
             artObj = Art.objects.get(ArtID=obj.artId.ArtID)
             artObj.sold=True
@@ -268,7 +276,8 @@ def order(request):
                 'payment_type':obj.artId.payment,
                 'lifetime':obj.artId.lifetime,
                 'cname':obj.cname,
-                'key':settings.RAZORPAY_KEY
+                'key':settings.RAZORPAY_KEY,
+                'range':range(1,6)
                 }
     if request.user.groups.filter(name="Artist").exists():
         context['group']='Artist'
@@ -286,6 +295,7 @@ def review(request):
             object=form.save(commit=False)
             object.showRev = True
             object.save()
+            Review.objects.filter(showRev=False).delete()
             Artform = ArtRatingForm(instance=obj.art)
             artobj= Artform.save(commit=False)
             artobj.rating = round(Review.objects.filter(art=obj.art).aggregate(Avg('rating'))['rating__avg'],2)
@@ -302,7 +312,8 @@ def review(request):
         'rating':obj.art.rating,
         'title':obj.art.title,
         'artist':obj.art.artist.name,
-        'comments': comments
+        'comments': comments,
+        'range':range(1,6)
         }     
     return render(request,'review.html',context)
 
@@ -315,3 +326,4 @@ def success(request):
 @login_required(login_url='login')
 def filtererror(request):
     return render(request,'filtererror.html')
+

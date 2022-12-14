@@ -52,7 +52,7 @@ class Order(models.Model):
     cname = models.TextField(max_length=100,default="")
     crole = models.TextField(max_length=100,default="")
     croleid = models.IntegerField(default=0)
-    artId = models.ForeignKey(Art, on_delete=models.CASCADE)
+    artId = models.ForeignKey(Art,on_delete=models.PROTECT)
     paid = models.BooleanField(default=False)
     def __str__(self):
         return self.artId.title
@@ -66,7 +66,7 @@ class Review(models.Model):
     crole = models.TextField(max_length=100,default="")
     croleid = models.IntegerField(default=0)
     showRev = models.BooleanField(default=False)
-    art = models.ForeignKey(Art, on_delete=models.CASCADE)
+    art = models.ForeignKey(Art,on_delete=models.PROTECT)
     def __str__(self):
         return self.art.title
     

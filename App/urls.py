@@ -15,5 +15,5 @@ urlpatterns = [
     path("order/", views.order, name="order"),
     path("review/", views.review, name="review"),
     path("success/", views.success, name="success"),
-    path("filter/", views.filtererror, name="filtererror"),
+    path("filter/", views.filtererror, name="filtererror")
 ]
