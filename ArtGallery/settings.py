@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-9_e2x)c_3ewhjk710e7j3p4rc$x59m7phajgsj%w9y0jv@i5-s'
+SECRET_KEY = #Enter Secret Key
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -132,5 +132,5 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #Razorpay
-RAZORPAY_KEY="rzp_test_Pw7VlxCqTHkntv"
-RAZORPAY_SECRET="O2VtQqF3PWM8Vhv9Mc8OTovG"
+RAZORPAY_KEY= #Enter Razorpay Key
+RAZORPAY_SECRET= #Enter Razorpay Secret
